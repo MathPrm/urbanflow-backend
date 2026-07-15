@@ -13,4 +13,4 @@ RUN npm install --only=production # <--- On installe uniquement les dépendances
 COPY --from=builder /app/dist ./dist 
 
 EXPOSE 8000
-CMD ["node", "dist/server.js"] # <--- Le serveur pur et performant
+CMD ["node", "dist/server.js"]
