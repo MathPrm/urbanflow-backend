@@ -31,4 +31,4 @@ jobs:
           mkdir -p ~/.kube
           echo "$KUBECONFIG_DATA" > ~/.kube/config
           # Redémarre le déploiement correspondant dans ton namespace 'urbanflow'
-          kubectl rollout restart deployment/urbanflow-${{ github.event.repository.name }} -n urbanflow
+          kubectl rollout restart deployment/${{ github.event.repository.name }} -n urbanflow

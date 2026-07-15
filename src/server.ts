@@ -44,7 +44,8 @@ server.get('/api/health/redis', async () => {
     const pong = await server.redis.ping();
     return { status: 'ok', redis: pong };
   } catch (err) {
-    return { status: 'error', redis: err.message };
+    const message = err instanceof Error ? err.message : String(err);
+    return { status: 'error', redis: message };
   }
 });
 

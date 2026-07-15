@@ -3,12 +3,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build  # <--- C'est ici que 'tsc' est lancé et crée le dossier 'dist'
+RUN npm run build
 
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --only=production # <--- On installe uniquement les dépendances de prod
+RUN npm install --only=production
 
 COPY --from=builder /app/dist ./dist 
 
