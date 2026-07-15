@@ -13,8 +13,11 @@ server.register(postgres, {
   connectionString: process.env.DATABASE_URL,
 });
 
+// ✅ CORRECTION : Ajoutez les options de connexion Redis
 server.register(fastifyRedis, {
-  url: process.env.REDIS_URL,
+  url: process.env.REDIS_URL || 'redis://urbanflow-redis:6379',
+  lazyConnect: false,
+  retryStrategy: (times) => Math.min(times * 50, 500), // Retry plus agressif
 });
 
 server.get('/api/health', async () => {
@@ -25,7 +28,6 @@ server.get('/api/health', async () => {
   };
 });
 
-// Route de test pour vérifier la connexion DB
 server.get('/api/health/db', async () => {
   const client = await server.pg.connect();
   try {
@@ -33,6 +35,16 @@ server.get('/api/health/db', async () => {
     return { status: 'ok', db_time: rows[0].now };
   } finally {
     client.release();
+  }
+});
+
+// ✅ BONUS : Route pour vérifier Redis
+server.get('/api/health/redis', async () => {
+  try {
+    const pong = await server.redis.ping();
+    return { status: 'ok', redis: pong };
+  } catch (err) {
+    return { status: 'error', redis: err.message };
   }
 });
 

@@ -1,18 +1,16 @@
-FROM node:20-alpine
-
+FROM node:20-alpine AS builder
 WORKDIR /app
-
-# Copier les fichiers de dépendances
 COPY package*.json ./
-
-# Installer les dépendances
 RUN npm install
-
-# Copier le reste du code
 COPY . .
+RUN npm run build  # <--- C'est ici que 'tsc' est lancé et crée le dossier 'dist'
 
-# Exposer le port du backend
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --only=production # <--- On installe uniquement les dépendances de prod
+
+COPY --from=builder /app/dist ./dist 
+
 EXPOSE 8000
-
-# Commande de démarrage
-CMD ["npm", "run", "dev"]
+CMD ["node", "dist/server.js"] # <--- Le serveur pur et performant
