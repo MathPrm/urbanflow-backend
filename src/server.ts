@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import postgres from '@fastify/postgres';
 import fastifyRedis from '@fastify/redis';
+import itinerairesRoutes from './modules/itineraires/routes';
 
 const server = Fastify({ logger: true });
 
@@ -13,11 +14,10 @@ server.register(postgres, {
   connectionString: process.env.DATABASE_URL,
 });
 
-// ✅ CORRECTION : Ajoutez les options de connexion Redis
 server.register(fastifyRedis, {
   url: process.env.REDIS_URL || 'redis://urbanflow-redis:6379',
   lazyConnect: false,
-  retryStrategy: (times) => Math.min(times * 50, 500), // Retry plus agressif
+  retryStrategy: (times) => Math.min(times * 50, 500),
 });
 
 server.get('/api/health', async () => {
@@ -38,7 +38,6 @@ server.get('/api/health/db', async () => {
   }
 });
 
-// ✅ BONUS : Route pour vérifier Redis
 server.get('/api/health/redis', async () => {
   try {
     const pong = await server.redis.ping();
@@ -48,6 +47,8 @@ server.get('/api/health/redis', async () => {
     return { status: 'error', redis: message };
   }
 });
+
+server.register(itinerairesRoutes);
 
 const start = async () => {
   try {
