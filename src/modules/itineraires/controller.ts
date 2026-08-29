@@ -37,4 +37,29 @@ export class ItinaryController {
       });
     }
   }
+
+  async searchPlaces(request: FastifyRequest<{ Querystring: { q: string } }>, reply: FastifyReply) {
+    const { q } = request.query;
+
+    if (!q) {
+      return reply.status(400).send({
+        statut: 'erreur',
+        message: 'Le paramètre "q" est obligatoire (ex: ?q=Chatelet).'
+      });
+    }
+
+    try {
+      const data = await this.service.searchPlaces(q);
+      return reply.send({
+        statut: 'succès',
+        data
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur interne lors de la recherche de lieux';
+      return reply.status(500).send({
+        statut: 'erreur',
+        message: errorMessage
+      });
+    }
+  }
 }
