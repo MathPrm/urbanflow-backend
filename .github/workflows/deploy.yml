@@ -22,7 +22,7 @@ jobs:
           context: .
           file: ./Dockerfile 
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/urbanflow-${{ github.event.repository.name }}:latest
+          ttags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
 
       - name: Deploy to OVH Kubernetes
         env:
