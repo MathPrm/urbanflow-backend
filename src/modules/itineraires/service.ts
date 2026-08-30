@@ -23,6 +23,7 @@ export class ItinaryService {
     const url = new URL(`${this.baseUrl}/journeys`);
     url.searchParams.append('from', formattedFrom);
     url.searchParams.append('to', formattedTo);
+    url.searchParams.append('apikey', this.apiKey);
 
     const finalUrl = url.toString();
     console.log(`[ItinaryService] Appel vers : ${finalUrl}`);
@@ -31,7 +32,7 @@ export class ItinaryService {
       const response = await fetch(finalUrl, {
         method: 'GET',
         headers: {
-          'apiKey': this.apiKey,
+          'apikey': this.apiKey,
           'Accept': 'application/json'
         }
       });
@@ -62,6 +63,7 @@ export class ItinaryService {
 
     const url = new URL(`${this.baseUrl}/places`);
     url.searchParams.append('q', query);
+    url.searchParams.append('apikey', this.apiKey);
 
     const finalUrl = url.toString();
     console.log(`[ItinaryService] Appel vers : ${finalUrl}`);
@@ -70,7 +72,7 @@ export class ItinaryService {
       const response = await fetch(finalUrl, {
         method: 'GET',
         headers: {
-          'apiKey': this.apiKey,
+          'apikey': this.apiKey,
           'Accept': 'application/json'
         }
       });
