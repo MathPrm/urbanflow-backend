@@ -3,11 +3,16 @@ import cors from '@fastify/cors';
 import postgres from '@fastify/postgres';
 import fastifyRedis from '@fastify/redis';
 import itinerairesRoutes from './modules/itineraires/routes';
+import fastifyJwt from '@fastify/jwt';
+import authRoutes from './modules/auth/routes';
 
 const server = Fastify({ logger: true });
 
 server.register(cors, {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  credentials: true,
 });
 
 server.register(postgres, {
@@ -19,6 +24,12 @@ server.register(fastifyRedis, {
   lazyConnect: false,
   retryStrategy: (times) => Math.min(times * 50, 500),
 });
+
+server.register(fastifyJwt, {
+  secret: process.env.JWT_SECRET || 'super_secret_jwt_key_a_changer_en_prod_2026',
+});
+
+server.register(authRoutes);
 
 server.get('/api/health', async () => {
   return {
