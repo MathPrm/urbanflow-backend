@@ -75,14 +75,24 @@ export class AuthController {
   }
 
   async updateProfile(request: FastifyRequest, reply: FastifyReply) {
-    let authUser: { id: string | number; email: string } = { id: 1, email: '' };
+    let authUser: { id: string | number; email: string } | null = null;
     try {
       await request.jwtVerify();
       if (request.user) {
         authUser = request.user as { id: string | number; email: string };
       }
     } catch {
-      // Ignore unverified token in demo fallback
+      return reply.status(401).send({
+        statut: 'erreur',
+        message: 'Token d\'authentification invalide ou expiré.',
+      });
+    }
+
+    if (!authUser) {
+      return reply.status(401).send({
+        statut: 'erreur',
+        message: 'Token d\'authentification requis.',
+      });
     }
 
     const body = request.body as AuthBody;

@@ -5,6 +5,7 @@ import fastifyRedis from '@fastify/redis';
 import itinerairesRoutes from './modules/itineraires/routes';
 import fastifyJwt from '@fastify/jwt';
 import authRoutes from './modules/auth/routes';
+import co2Routes from './modules/co2/routes';
 
 const server = Fastify({ logger: true });
 
@@ -20,9 +21,9 @@ server.register(postgres, {
 });
 
 server.register(fastifyRedis, {
-  url: process.env.REDIS_URL || 'redis://urbanflow-redis:6379',
-  lazyConnect: false,
-  retryStrategy: (times) => Math.min(times * 50, 500),
+  url: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
+  lazyConnect: true,
+  retryStrategy: (times) => (times > 3 ? null : Math.min(times * 50, 500)),
 });
 
 server.register(fastifyJwt, {
@@ -30,6 +31,7 @@ server.register(fastifyJwt, {
 });
 
 server.register(authRoutes);
+server.register(co2Routes);
 
 server.get('/api/health', async () => {
   return {
@@ -65,7 +67,7 @@ const start = async () => {
   try {
     const port = Number(process.env.PORT) || 8000;
     await server.listen({ port, host: '0.0.0.0' });
-    console.log(`🚀 Serveur backend démarré sur http://localhost:${port}`);
+    server.log.info(`🚀 Serveur backend démarré sur http://localhost:${port}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

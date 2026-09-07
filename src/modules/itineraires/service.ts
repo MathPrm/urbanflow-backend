@@ -26,7 +26,6 @@ export class ItinaryService {
     url.searchParams.append('apikey', this.apiKey);
 
     const finalUrl = url.toString();
-    console.log(`[ItinaryService] Appel vers : ${finalUrl}`);
 
     try {
       const response = await fetch(finalUrl, {
@@ -39,7 +38,6 @@ export class ItinaryService {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        console.error(`[ItinaryService] Détails de l'erreur API :`, errorBody);
         throw new Error(`Erreur API externe: ${response.status} - ${errorBody}`);
       }
 
@@ -47,7 +45,6 @@ export class ItinaryService {
       return data;
       
     } catch (error) {
-      console.error("[ItinaryService] Erreur lors de la recherche :", error);
       throw error;
     }
   }
@@ -66,7 +63,6 @@ export class ItinaryService {
     url.searchParams.append('apikey', this.apiKey);
 
     const finalUrl = url.toString();
-    console.log(`[ItinaryService] Appel vers : ${finalUrl}`);
 
     try {
       const response = await fetch(finalUrl, {
@@ -79,7 +75,6 @@ export class ItinaryService {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        console.error(`[ItinaryService] Détails de l'erreur API Places :`, errorBody);
         throw new Error(`Erreur API externe: ${response.status} - ${errorBody}`);
       }
 
@@ -87,7 +82,6 @@ export class ItinaryService {
       return data;
       
     } catch (error) {
-      console.error("[ItinaryService] Erreur lors de la recherche de lieux :", error);
       throw error;
     }
   }
